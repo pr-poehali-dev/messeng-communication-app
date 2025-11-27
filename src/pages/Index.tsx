@@ -19,88 +19,92 @@ const Index = () => {
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const chatsData = [
-    { id: 1, name: 'Анна Иванова', avatar: '', lastMessage: 'Привет! Как дела?', time: '14:32', unread: 3, online: true },
-    { id: 2, name: 'Дмитрий Петров', avatar: '', lastMessage: 'Отправил файлы', time: '13:15', unread: 0, online: false },
-    { id: 3, name: 'AI Team', avatar: '', lastMessage: 'Встреча через 30 минут', time: '12:45', unread: 1, online: true },
-  ];
+  const chatsData: Array<{id: number; name: string; avatar: string; lastMessage: string; time: string; unread: number; online: boolean}> = [];
 
-  const contactsData = [
-    { id: 1, name: 'Мария Смирнова', phone: '+7 999 123-45-67', status: 'В сети' },
-    { id: 2, name: 'Алексей Козлов', phone: '+7 999 765-43-21', status: 'Был(а) час назад' },
-    { id: 3, name: 'Елена Волкова', phone: '+7 999 555-00-11', status: 'В сети' },
-  ];
+  const contactsData: Array<{id: number; name: string; phone: string; status: string}> = [];
 
-  const callsData = [
-    { id: 1, name: 'Анна Иванова', type: 'video', direction: 'incoming', time: '14:32', duration: '15:23' },
-    { id: 2, name: 'Дмитрий Петров', type: 'audio', direction: 'outgoing', time: '13:15', duration: '5:42' },
-    { id: 3, name: 'AI Team', type: 'video', direction: 'missed', time: '12:45', duration: '-' },
-  ];
+  const callsData: Array<{id: number; name: string; type: string; direction: string; time: string; duration: string}> = [];
 
   const renderChats = () => (
     <div className="space-y-2">
-      {chatsData.map((chat) => (
-        <div key={chat.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer group">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Avatar className="h-14 w-14 border-2 border-primary/50">
-                <AvatarImage src={chat.avatar} />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white font-semibold">
-                  {chat.name.split(' ').map(n => n[0]).join('')}
-                </AvatarFallback>
-              </Avatar>
-              {chat.online && (
-                <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-background animate-pulse" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="font-semibold text-foreground truncate">{chat.name}</h3>
-                <span className="text-xs text-muted-foreground">{chat.time}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground truncate">{chat.lastMessage}</p>
-                {chat.unread > 0 && (
-                  <Badge className="bg-primary text-white ml-2 px-2 py-0.5 neon-glow">{chat.unread}</Badge>
+      {chatsData.length === 0 ? (
+        <div className="glass-effect rounded-2xl p-12 text-center">
+          <Icon name="MessageSquare" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+          <h3 className="text-lg font-semibold mb-2">Нет чатов</h3>
+          <p className="text-sm text-muted-foreground">Начните общение с контактами</p>
+        </div>
+      ) : (
+        chatsData.map((chat) => (
+          <div key={chat.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer group">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Avatar className="h-14 w-14 border-2 border-primary/50">
+                  <AvatarImage src={chat.avatar} />
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white font-semibold">
+                    {chat.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                {chat.online && (
+                  <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-background animate-pulse" />
                 )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-semibold text-foreground truncate">{chat.name}</h3>
+                  <span className="text-xs text-muted-foreground">{chat.time}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground truncate">{chat.lastMessage}</p>
+                  {chat.unread > 0 && (
+                    <Badge className="bg-primary text-white ml-2 px-2 py-0.5 neon-glow">{chat.unread}</Badge>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 
   const renderCalls = () => (
     <div className="space-y-2">
-      {callsData.map((call) => (
-        <div key={call.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer group">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-14 w-14 border-2 border-primary/50">
-              <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white font-semibold">
-                {call.name.split(' ').map(n => n[0]).join('')}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <h3 className="font-semibold text-foreground mb-1">{call.name}</h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Icon 
-                  name={call.direction === 'incoming' ? 'PhoneIncoming' : call.direction === 'outgoing' ? 'PhoneOutgoing' : 'PhoneMissed'} 
-                  size={16} 
-                />
-                <span>{call.direction === 'incoming' ? 'Входящий' : call.direction === 'outgoing' ? 'Исходящий' : 'Пропущенный'}</span>
-                <span>• {call.time}</span>
+      {callsData.length === 0 ? (
+        <div className="glass-effect rounded-2xl p-12 text-center mb-4">
+          <Icon name="Phone" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+          <h3 className="text-lg font-semibold mb-2">Нет истории звонков</h3>
+          <p className="text-sm text-muted-foreground">Здесь будут отображаться ваши звонки</p>
+        </div>
+      ) : (
+        callsData.map((call) => (
+          <div key={call.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer group">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-14 w-14 border-2 border-primary/50">
+                <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white font-semibold">
+                  {call.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground mb-1">{call.name}</h3>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Icon 
+                    name={call.direction === 'incoming' ? 'PhoneIncoming' : call.direction === 'outgoing' ? 'PhoneOutgoing' : 'PhoneMissed'} 
+                    size={16} 
+                  />
+                  <span>{call.direction === 'incoming' ? 'Входящий' : call.direction === 'outgoing' ? 'Исходящий' : 'Пропущенный'}</span>
+                  <span>• {call.time}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">{call.duration}</span>
+                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full hover:bg-primary/20">
+                  <Icon name={call.type === 'video' ? 'Video' : 'Phone'} size={20} />
+                </Button>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">{call.duration}</span>
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full hover:bg-primary/20">
-                <Icon name={call.type === 'video' ? 'Video' : 'Phone'} size={20} />
-              </Button>
-            </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
       <div className="grid grid-cols-2 gap-3 mt-4">
         <Button 
           onClick={() => setShowVideoCall(true)}
@@ -122,53 +126,48 @@ const Index = () => {
 
   const renderContacts = () => (
     <div className="space-y-2">
-      {contactsData.map((contact) => (
-        <div key={contact.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-14 w-14 border-2 border-primary/50">
-              <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white font-semibold">
-                {contact.name.split(' ').map(n => n[0]).join('')}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <h3 className="font-semibold text-foreground mb-1">{contact.name}</h3>
-              <p className="text-sm text-muted-foreground">{contact.phone}</p>
-              <p className="text-xs text-accent mt-1">{contact.status}</p>
-            </div>
-            <div className="flex gap-2">
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full hover:bg-primary/20">
-                <Icon name="Phone" size={18} />
-              </Button>
-              <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full hover:bg-primary/20">
-                <Icon name="MessageCircle" size={18} />
-              </Button>
+      {contactsData.length === 0 ? (
+        <div className="glass-effect rounded-2xl p-12 text-center">
+          <Icon name="Users" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+          <h3 className="text-lg font-semibold mb-2">Нет контактов</h3>
+          <p className="text-sm text-muted-foreground">Добавьте контакты, чтобы начать общение</p>
+        </div>
+      ) : (
+        contactsData.map((contact) => (
+          <div key={contact.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-14 w-14 border-2 border-primary/50">
+                <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white font-semibold">
+                  {contact.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground mb-1">{contact.name}</h3>
+                <p className="text-sm text-muted-foreground">{contact.phone}</p>
+                <p className="text-xs text-accent mt-1">{contact.status}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full hover:bg-primary/20">
+                  <Icon name="Phone" size={18} />
+                </Button>
+                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full hover:bg-primary/20">
+                  <Icon name="MessageCircle" size={18} />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 
   const renderGroups = () => (
     <div className="space-y-2">
-      {[
-        { id: 1, name: 'Рабочая группа', members: 24, lastActivity: '2 часа назад' },
-        { id: 2, name: 'Друзья', members: 12, lastActivity: '30 минут назад' },
-        { id: 3, name: 'AI Энтузиасты', members: 156, lastActivity: '5 минут назад' },
-      ].map((group) => (
-        <div key={group.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer">
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <Icon name="Users" size={24} className="text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-foreground mb-1">{group.name}</h3>
-              <p className="text-sm text-muted-foreground">{group.members} участников</p>
-              <p className="text-xs text-muted-foreground mt-1">Активность: {group.lastActivity}</p>
-            </div>
-          </div>
-        </div>
-      ))}
+      <div className="glass-effect rounded-2xl p-12 text-center mb-4">
+        <Icon name="UsersRound" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+        <h3 className="text-lg font-semibold mb-2">Нет групп</h3>
+        <p className="text-sm text-muted-foreground">Создайте группу для общения с несколькими людьми</p>
+      </div>
       <Button 
         onClick={() => setShowCreateGroup(true)}
         className="w-full mt-4 bg-gradient-to-r from-primary to-secondary hover:opacity-90 h-12 rounded-2xl neon-glow"
@@ -181,29 +180,16 @@ const Index = () => {
 
   const renderCommunities = () => (
     <div className="space-y-2">
-      {[
-        { id: 1, name: 'Tech Community', subscribers: 15420, category: 'Технологии' },
-        { id: 2, name: 'AI Innovations', subscribers: 8900, category: 'Искусственный интеллект' },
-        { id: 3, name: 'Design Masters', subscribers: 12300, category: 'Дизайн' },
-      ].map((community) => (
-        <div key={community.id} className="glass-effect rounded-2xl p-4 hover:bg-white/10 transition-all cursor-pointer">
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center">
-              <Icon name="Globe" size={24} className="text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-foreground mb-1">{community.name}</h3>
-              <p className="text-sm text-muted-foreground">{community.subscribers.toLocaleString()} подписчиков</p>
-              <Badge className="mt-2 bg-primary/20 text-primary border-primary/30">{community.category}</Badge>
-            </div>
-          </div>
-        </div>
-      ))}
+      <div className="glass-effect rounded-2xl p-12 text-center">
+        <Icon name="Globe" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+        <h3 className="text-lg font-semibold mb-2">Нет сообществ</h3>
+        <p className="text-sm text-muted-foreground">Подпишитесь на сообщества по интересам</p>
+      </div>
     </div>
   );
 
   const navItems = [
-    { id: 'chats' as TabType, icon: 'MessageSquare', label: 'Чаты', badge: 4 },
+    { id: 'chats' as TabType, icon: 'MessageSquare', label: 'Чаты' },
     { id: 'calls' as TabType, icon: 'Phone', label: 'Звонки' },
     { id: 'contacts' as TabType, icon: 'Users', label: 'Контакты' },
     { id: 'groups' as TabType, icon: 'UsersRound', label: 'Группы' },
