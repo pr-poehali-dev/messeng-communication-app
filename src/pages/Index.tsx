@@ -7,12 +7,14 @@ import Icon from '@/components/ui/icon';
 import VideoCall from '@/components/VideoCall';
 import KelanAssistant from '@/components/KelanAssistant';
 import ProfileSettings from '@/components/ProfileSettings';
+import DialPad from '@/components/DialPad';
 
 type TabType = 'chats' | 'calls' | 'contacts' | 'groups' | 'communities' | 'kelan' | 'profile';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<TabType>('chats');
   const [showVideoCall, setShowVideoCall] = useState(false);
+  const [showDialPad, setShowDialPad] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const chatsData = [
@@ -97,13 +99,22 @@ const Index = () => {
           </div>
         </div>
       ))}
-      <Button 
-        onClick={() => setShowVideoCall(true)}
-        className="w-full mt-4 bg-gradient-to-r from-primary to-secondary hover:opacity-90 h-12 rounded-2xl neon-glow"
-      >
-        <Icon name="Video" size={20} className="mr-2" />
-        Начать видеозвонок
-      </Button>
+      <div className="grid grid-cols-2 gap-3 mt-4">
+        <Button 
+          onClick={() => setShowVideoCall(true)}
+          className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 h-12 rounded-2xl neon-glow"
+        >
+          <Icon name="Video" size={20} className="mr-2" />
+          Видеозвонок
+        </Button>
+        <Button 
+          onClick={() => setShowDialPad(true)}
+          className="bg-gradient-to-r from-secondary to-accent hover:opacity-90 h-12 rounded-2xl neon-glow"
+        >
+          <Icon name="Smartphone" size={20} className="mr-2" />
+          Набрать номер
+        </Button>
+      </div>
     </div>
   );
 
@@ -194,6 +205,18 @@ const Index = () => {
 
   if (showVideoCall) {
     return <VideoCall onClose={() => setShowVideoCall(false)} />;
+  }
+
+  if (showDialPad) {
+    return (
+      <DialPad 
+        onClose={() => setShowDialPad(false)} 
+        onCall={(number, isVideo) => {
+          setShowDialPad(false);
+          setShowVideoCall(true);
+        }}
+      />
+    );
   }
 
   if (activeTab === 'kelan') {
