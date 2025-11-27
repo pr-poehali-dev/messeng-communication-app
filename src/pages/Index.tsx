@@ -8,6 +8,7 @@ import VideoCall from '@/components/VideoCall';
 import KelanAssistant from '@/components/KelanAssistant';
 import ProfileSettings from '@/components/ProfileSettings';
 import DialPad from '@/components/DialPad';
+import CreateGroup from '@/components/CreateGroup';
 
 type TabType = 'chats' | 'calls' | 'contacts' | 'groups' | 'communities' | 'kelan' | 'profile';
 
@@ -15,6 +16,7 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<TabType>('chats');
   const [showVideoCall, setShowVideoCall] = useState(false);
   const [showDialPad, setShowDialPad] = useState(false);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const chatsData = [
@@ -167,6 +169,13 @@ const Index = () => {
           </div>
         </div>
       ))}
+      <Button 
+        onClick={() => setShowCreateGroup(true)}
+        className="w-full mt-4 bg-gradient-to-r from-primary to-secondary hover:opacity-90 h-12 rounded-2xl neon-glow"
+      >
+        <Icon name="Plus" size={20} className="mr-2" />
+        Создать группу
+      </Button>
     </div>
   );
 
@@ -214,6 +223,18 @@ const Index = () => {
         onCall={(number, isVideo) => {
           setShowDialPad(false);
           setShowVideoCall(true);
+        }}
+      />
+    );
+  }
+
+  if (showCreateGroup) {
+    return (
+      <CreateGroup 
+        onClose={() => setShowCreateGroup(false)} 
+        onCreate={(groupName, selectedContacts) => {
+          setShowCreateGroup(false);
+          setActiveTab('groups');
         }}
       />
     );
